@@ -1,8 +1,15 @@
-var http = require('http');
+var http = require('http'),
+		path = require('path'),
+		// node_modules
+		tako = require('tako'),
+		// variables
+  	app = tako(),
+		port = process.env.PORT || 5000;
 
-var port = process.env.PORT || 5000;
+app.route('/static/*').files(path.join(__dirname, 'static'))
 
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('Hello Worlds\n');
-}).listen(port);
+app.route('/')
+	.file('html/index.html')
+  .methods('GET');
+
+app.httpServer.listen(port)
