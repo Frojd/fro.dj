@@ -61,19 +61,27 @@ function DB(vars){
 
 	/** setCustom
 	 * 
-	 * Puts a long url and a short url to the database, if not already used
+	 * Puts a long url and an alias to the database, if not already used
 	 *
-	 * @param longUrl
-	 * @param shortUrl
+	 * @param url string The url to be shortened
+	 * @param alias string The desired alias. Only path, no domain!
 	 *
 	 * @callback
 	 	* @param err object, null if no error
-	 	* @param shortUrl string, sortened url
+	 	* @param alias string, sortened url
 	 */
-	this.setCustom = function(longUrl, shortUrl, callback){
-		// Connect to database
-		db.collection(settings.collection, function(err, collection){
+	this.setCustom = function(url, alias, callback){
+		insert({alias: alias, url: url}, function(err, data){
 			if( !err ){
+				callback(null, alias);
+			}
+			if( err && err.code === 11000 ){
+				// Duplicate key, alias already exists
+				callback({code: 11000, err: 'Alias is unavailable'});
+			}
+			else {
+				// Other error, abort
+				callback(err, data);
 			}
 		});
 	}
