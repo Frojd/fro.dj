@@ -27,14 +27,15 @@ function DB(vars){
 
 	/** set
 	 * 
-	 * Recieves a long url and returns the short one
+	 * Recieves a long url, generates an alias, puts them to the database and
+	 * returns the alias.
 	 *
 	 * @param url
 	 * @param callback
 	 *
 	 * @callback
 	 	* @param err string, null if no error
-	 	* @param shortUrl string, sortened url
+	 	* @param alias string, sortened path (eg Le3t)
 	 */
 	this.set = function(url, callback){
 		// Try to insert a random alias
@@ -47,9 +48,11 @@ function DB(vars){
 					tryInsert(collection, url, i++);
 				}
 				else if( !err ){
+					// No error, assume new entry was inserted and return alias
 					callback(null, doc.alias);
 				}
 				else {
+					// Other error, abort
 					callback(err, data);
 				}
 			});
@@ -62,10 +65,9 @@ function DB(vars){
 	 *
 	 * @param longUrl
 	 * @param shortUrl
-	 * @param callback
 	 *
 	 * @callback
-	 	* @param err string, null if no error
+	 	* @param err object, null if no error
 	 	* @param shortUrl string, sortened url
 	 */
 	this.setCustom = function(longUrl, shortUrl, callback){
@@ -78,6 +80,16 @@ function DB(vars){
 
 	/* Private methods */
 	
+	/** insert
+	 *
+	 * Insert a document into this object's collection.
+	 *
+	 * @param doc required Document to be inserted in the database
+	 *
+	 * @callback
+	 	* @param err object, null if no error
+	 	* @param data object, data returned from mongodb
+	 */
 	function insert(doc, callback){
 		// Connect to database
 		db.collection(settings.collection, function(err, collection){
@@ -94,6 +106,12 @@ function DB(vars){
 		});
 	}
 
+	/** generateAlias
+	 *
+	 * Generates a random string that's half as many bytes as i long.
+	 *
+	 * @param i int required Preferably used to count how many iterations the generation has been tried
+	 */
 	function generateAlias(i){
 		var charSet = ['0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'],
 			result = '',
@@ -101,7 +119,7 @@ function DB(vars){
 			reps = Math.floor(i/2);
 		
 		for( k = 0; k <= reps; k++ ){
-			result += charSet[Math.floor(Math.random()*60)];
+			result += charSet[Math.floor(Math.random()*charSet.length)];
 		}
 
 		return result;
