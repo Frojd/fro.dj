@@ -38,8 +38,19 @@ function DB(vars){
 	 	* @param alias string, sortened path (eg Le3t)
 	 */
 	this.set = function(url, callback){
-		// Try to insert a random alias
-		(function tryInsert(collection, url, i){
+		// First check if the url already exists
+		exists({url: url}, function(err, item){
+			if( !err && item ){
+				// Url is already stored in the database
+				callback(null, item.alias);
+			}
+			else {
+				// Try to insert a random alias
+				tryInsert(url, 0);
+			}
+		});
+
+		function tryInsert(url, i){
 			var doc = {alias: generateAlias(i), url: url};
 
 			insert(doc, function(err, data){
@@ -56,7 +67,7 @@ function DB(vars){
 					callback(err, data);
 				}
 			});
-		})(collection, url, 0);
+		};
 	}
 
 	/** setCustom
@@ -99,7 +110,6 @@ function DB(vars){
 	 	* @param data object, data returned from mongodb
 	 */
 	function insert(doc, callback){
-		// Connect to database
 		db.collection(settings.collection, function(err, collection){
 			if( !err ){
 				collection.ensureIndex({alias: 1}, {unique: true});
@@ -131,6 +141,14 @@ function DB(vars){
 		}
 
 		return result;
+	}
+
+	function exists(doc, callback){
+		db.collection(settings.collection, function(err, collection){
+			collection.findOne(doc, function(err, item){
+				callback(err, item);
+			});
+		});
 	}
 }
 
