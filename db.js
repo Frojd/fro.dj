@@ -30,6 +30,9 @@ function DB(vars){
 	 * Takes an alias and returns the 
 	 */
 	this.get = function(alias, callback){
+		// Make sure there's a callback
+		callback = callback || function(){};
+		
 		exists({alias: alias}, function(err, item){
 			if( !err && item.url ){
 				// Alias exists, return url
@@ -59,6 +62,9 @@ function DB(vars){
 	 	* @param alias string, sortened path (eg Le3t)
 	 */
 	this.set = function(url, callback){
+		// Make sure there's a callback
+		callback = callback || function(){};
+		
 		// First check if the url already exists
 		exists({url: url}, function(err, item){
 			if( !err && item ){
@@ -103,6 +109,9 @@ function DB(vars){
 	 	* @param alias string, sortened url
 	 */
 	this.setCustom = function(url, alias, callback){
+		// Make sure there's a callback
+		callback = callback || function(){};
+		
 		insert({alias: alias, url: url}, function(err, data){
 			if( !err ){
 				callback(null, alias);
@@ -131,6 +140,9 @@ function DB(vars){
 	 	* @param data object, data returned from mongodb
 	 */
 	function insert(doc, callback){
+		// Make sure there's a callback
+		callback = callback || function(){};
+		
 		db.collection(settings.collection, function(err, collection){
 			if( !err ){
 				collection.ensureIndex({alias: 1}, {unique: true});
@@ -165,6 +177,9 @@ function DB(vars){
 	}
 
 	function exists(doc, callback){
+		// Make sure there's a callback
+		callback = callback || function(){};
+		
 		db.collection(settings.collection, function(err, collection){
 			collection.findOne(doc, function(err, item){
 				callback(err, item);
