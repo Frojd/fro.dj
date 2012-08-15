@@ -25,6 +25,27 @@ function DB(vars){
 		settings[i] = vars[i];
 	}
 
+	/** get
+	 *
+	 * Takes an alias and returns the 
+	 */
+	this.get = function(alias, callback){
+		exists({alias: alias}, function(err, item){
+			if( !err && item.url ){
+				// Alias exists, return url
+				callback(null, item.url);
+			}
+			else if( !err ){
+				// Alias doesn't exist
+				callback({code: 404, error: 'Alias doesn\'t exist'}, item);
+			}
+			else {
+				// Database error
+				callback(err, item);
+			}
+		});
+	};
+
 	/** set
 	 * 
 	 * Recieves a long url, generates an alias, puts them to the database and
