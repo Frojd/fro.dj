@@ -27,14 +27,20 @@ function DB(vars){
 
 	/** get
 	 *
-	 * Takes an alias and returns the 
+	 * Takes an alias and returns the url to redirect to.
+	 *
+	 * @param alias string required Alias for a url
+	 *
+	 * @callback
+	 	* @param err object Null if no error. err.code = 404 if alias doesn't exist
+	 	* @param (url string Url to redirect to) | (item object Mongodb item if error)
 	 */
 	this.get = function(alias, callback){
 		// Make sure there's a callback
 		callback = callback || function(){};
-		
+
 		exists({alias: alias}, function(err, item){
-			if( !err && item.url ){
+			if( !err && typeof item === 'object' && item.url ){
 				// Alias exists, return url
 				callback(null, item.url);
 			}
