@@ -1,6 +1,3 @@
-// Get dependencies
-var mongo = require('mongo');
-
 /** DB
  *
  * @param vars
@@ -122,7 +119,7 @@ function DB(vars){
 			if( !err ){
 				callback(null, alias);
 			}
-			if( err && err.code === 11000 ){
+			else if( err && err.code === 11000 ){
 				// Duplicate key, alias already exists
 				callback({code: 11000, err: 'Alias is unavailable'});
 			}
@@ -149,7 +146,7 @@ function DB(vars){
 		// Make sure there's a callback
 		callback = callback || function(){};
 		
-		db.collection(settings.collection, function(err, collection){
+		settings.db.collection(settings.collection, function(err, collection){
 			if( !err ){
 				collection.ensureIndex({alias: 1}, {unique: true});
 
@@ -165,15 +162,15 @@ function DB(vars){
 
 	/** generateAlias
 	 *
-	 * Generates a random string that's half as many bytes as i long.
+	 * Generates a random string that's half as many bytes as i long plus two.
 	 *
 	 * @param i int required Preferably used to count how many iterations the generation has been tried
 	 */
 	function generateAlias(i){
-		var charSet = ['0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'],
+		var charSet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
 			result = '',
 			k,
-			reps = Math.floor(i/2);
+			reps = Math.floor(i/2) + 2;
 		
 		for( k = 0; k <= reps; k++ ){
 			result += charSet[Math.floor(Math.random()*charSet.length)];
@@ -186,7 +183,7 @@ function DB(vars){
 		// Make sure there's a callback
 		callback = callback || function(){};
 		
-		db.collection(settings.collection, function(err, collection){
+		settings.db.collection(settings.collection, function(err, collection){
 			collection.findOne(doc, function(err, item){
 				callback(err, item);
 			});
