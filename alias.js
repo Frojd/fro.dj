@@ -37,7 +37,7 @@ function DB(vars){
 		callback = callback || function(){};
 
 		exists({alias: alias}, function(err, item){
-			if( !err && typeof item === 'object' && item.url ){
+			if( !err && item && item.url ){
 				// Alias exists, return url
 				callback(null, item.url);
 			}
