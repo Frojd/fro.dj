@@ -1,23 +1,30 @@
 var http = require('http'),
-		path = require('path'),
-		fs = require('fs'),
-		util = require('util'),
-		// node_modules
-		tako = require('tako'),
-		mongo = require('mongodb'),
-		// variables
+	path = require('path'),
+	fs = require('fs'),
+	util = require('util'),
+// node_modules
+	tako = require('tako'),
+	mongo = require('mongodb'),
+// variables
   	app = tako(),
-		port = process.env.PORT || 5000;
+	port = process.env.PORT || 5000,
+// Mongo vars
+	db,
+	alias,
+	dbhost,
+	dbport;
+
 
 /* Set up mongo */
 
-var dbhost = process.env['MONGO_NODE_DRIVER_HOST'] || 'localhost',
-	dbport = process.env['MONGO_NODE_DRIVER_PORT'] || 27017;
+dbhost = process.env['MONGO_NODE_DRIVER_HOST'] || 'localhost';
+dbport = process.env['MONGO_NODE_DRIVER_PORT'] || 27017;
 
-console.log("Connecting to " + dbhost + ":" + dbport);
+db = new mongo.Db('frodj', new mongo.Server(dbhost, dbport, {auto_reconnect: true}));
+alias = require('./alias.js')({db: db});
 
-var db = new mongo.Db('frodj', new mongo.Server(dbhost, dbport, {auto_reconnect: true})),
-	alias = require('./alias.js')({db: db});
+console.log("Connecting to db @ " + dbhost + ":" + dbport);
+
 
 /* Route */
 
@@ -66,3 +73,4 @@ app.route('/*', function(req, res){
 });
 
 app.httpServer.listen(port);
+console.log('Listening to port ' + port);
