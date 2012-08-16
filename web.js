@@ -34,6 +34,63 @@ app.route('/')
 	.file('html/index.html')
   .methods('GET');
 
+app.route('/mini/*', function(req, res){
+	var url = req.url,
+		i;
+
+	// Split the url
+	url = url.split('/');
+	
+	// Trim empty indexes and mini
+	for( i = 0; i < url.length; i++ ){
+		if( url[i] === 'mini' || url[i] === '' ){
+			url.splice(i--, 1);
+		}
+	}
+
+	if( url.length === 1 ){
+		// Needs an alias
+		url[0] = decodeURIComponent(url[0]);
+
+		alias.set(url[0], function(err, alias){
+			if( !err ){
+				res.writeHead(200, {'Content-Type': 'application/json'});
+				res.end('{"alias": "' + alias + '"}');
+			}
+			else {
+				// Server error
+				res.statusCode = 500;
+				res.end('{"error": {"code": 500, "message": "Something went terribly wrong, but we\'re not sure exactly what happened."}}');
+			}
+		});
+	}
+	else if( url.length === 2 ){
+		url[0] = decodeURIComponent(url[0]);
+
+		// Wants an alias
+		alias.setCustom(url[0], url[1], function(err, alias){
+			if( !err ){
+				res.end('{"alias": "' + alias + '"}');
+			}
+			else if( err.code === 11000 ){
+				// Server error
+				res.statusCode = 409;
+				res.end('{"error": {"code": 409, "message": "The alias \'' + url[1] + '\' is already taken. Please try another alias."}}');
+			}
+			else {
+				// Server error
+				res.statusCode = 500;
+				res.end('{"error": {"code": 500, "message": "Something went terribly wrong, but we\re not sure exactly what happened."}}');
+			}
+		});
+	}
+	else {
+		// Malformed request
+		res.statusCode = 400;
+		res.end('{"error": {"code": 400, "message": "Malformed request. Must be /mini/URIComponentEncodedURI[/optional: desiredAlias]."}}');
+	}
+});
+
 app.route('/*', function(req, res){
 	alias.get(req.url.substring(1), function(err, url){
 		var stat, readStream, filePath;

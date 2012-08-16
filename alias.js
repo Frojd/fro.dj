@@ -97,7 +97,7 @@ function DB(vars){
 					callback(err, data);
 				}
 			});
-		};
+		}
 	}
 
 	/** setCustom
@@ -109,7 +109,7 @@ function DB(vars){
 	 *
 	 * @callback
 	 	* @param err object, null if no error
-	 	* @param alias string, sortened url
+	 	* @param alias string, shortened url
 	 */
 	this.setCustom = function(url, alias, callback){
 		// Make sure there's a callback
