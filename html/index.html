@@ -8,6 +8,9 @@
 
   <link rel="stylesheet" media="screen" href="/static/css/style.css?v001launch">
   <link rel="stylesheet" media="screen" href="/static/css/frodj.css?v001launch">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script src="/static/js/script.js"></script>
 </head>
 
 <body>
@@ -17,10 +20,13 @@
 	<section id="main">
 		<form id="shortener">
 			<fieldset>
-				<input type="url" id="url" value ="" placeholder="http://reallyreallyreallyreallyreally.looooooong.url" /><button id="submit">Shorter!</button>
+				<input type="text" id="url" value="" placeholder="http://reallyreallyreallyreallyreally.looooooong.url" autofocus /><button id="submit">Shorter!</button>
 			</fieldset>
 			<fieldset>
 				<input type="text" id="alias" value="" placeholder="yeah" />
+			</fieldset>
+			<fieldset>
+				<p id="result"></p>
 			</fieldset>
 		</form>
 	</section>
