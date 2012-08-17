@@ -57,6 +57,11 @@ app.route('/mini/*', function(req, res){
 				res.writeHead(200, {'Content-Type': 'application/json'});
 				res.end('{"alias": "' + alias + '"}');
 			}
+			else if( err.code === 400 ){
+				// Malform error
+				res.statusCode = 400;
+				res.end('{"error": {"code": 400, "message": "The url doesn\'t look like a url..."}}');
+			}
 			else {
 				// Server error
 				res.statusCode = 500;
@@ -76,6 +81,11 @@ app.route('/mini/*', function(req, res){
 				// Server error
 				res.statusCode = 409;
 				res.end('{"error": {"code": 409, "message": "The alias \'' + url[1] + '\' is already taken. Please try another alias."}}');
+			}
+			else if( err.code === 400 ){
+				// Malform error
+				res.statusCode = 400;
+				res.end('{"error": {"code": 400, "message": "The url or alias is not valid. The alias may only contain A-Z, a-z and 0-9"}}');
 			}
 			else {
 				// Server error
