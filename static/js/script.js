@@ -37,6 +37,11 @@ jQuery(function($){
 				error: error
 			});
 		}
+		else {
+			result
+				.addClass('error')
+				.html('Invalid url');
+		}
 	});
 
 	function error(){
@@ -59,12 +64,12 @@ jQuery(function($){
 
 		if( url !== '' ){
 			// Not contains spaces and is longer than one character
-			url = ( url.indexOf(' ') === -1 && url.length > 1 ? url : '' )
+			url = ( url.indexOf(' ') === -1 && url.length > 1 )
 				? url
 				: '';
 
-			// If url contains no protocoll, prepend http:// and show it in the ui so the user knows what will be shortened
-			if( url.indexOf('://') <= 0 ){
+			// If url contains no protocol, prepend http:// and show it in the UI so the user knows what will be shortened
+			if( url !== '' && url.indexOf('://') <= 0 ){
 				url = 'http://' + url;
 				elem.val(url);
 			}
