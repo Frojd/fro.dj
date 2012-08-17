@@ -2,14 +2,27 @@ jQuery(function($){
 	var submit = $('#submit'),
 		url = $('#url'),
 		alias = $('#alias'),
-		result = $('#result');
+		result = $('#result'),
+		arrow = $('#toggleAlias');
 
+	// Hide alias input and show when arrow is clicked
+	alias.parent().hide();
+	
+	arrow.click(function(e){
+		arrow.toggleClass('active');
+		alias.parent().slideToggle();
+	});
+
+	// Handle form submission
 	submit.click(function(e){
+		var urlString = validateUrl(url)
+			aliasString = validateAlias(alias);
+
 		e.preventDefault();
 
-		if( url.val() !== "" ){
+		if( urlString ){
 			$.ajax({
-				url: '/mini/' + encodeURIComponent(url.val()) + (alias.val() && '/' + alias.val()),
+				url: '/mini/' + encodeURIComponent(urlString) + (aliasString && '/' + aliasString),
 				dataType: 'json',
 				success: function(data){
 					if( !data.error && data.alias ){
@@ -28,7 +41,7 @@ jQuery(function($){
 
 	function error(){
 		var text;
-console.log('error: ', arguments);
+
 		if( arguments[0].status === 409 ){
 			text = 'Alias is already taken';
 		}
@@ -39,5 +52,33 @@ console.log('error: ', arguments);
 		result
 			.addClass('error')
 			.html(text);
+	}
+
+	function validateUrl(elem){
+		var url = elem.val();
+
+		if( url !== '' ){
+			// Not contains spaces and is longer than one character
+			url = ( url.indexOf(' ') === -1 && url.length > 1 ? url : '' )
+				? url
+				: '';
+
+			// If url contains no protocoll, prepend http:// and show it in the ui so the user knows what will be shortened
+			if( url.indexOf('://') <= 0 ){
+				url = 'http://' + url;
+				elem.val(url);
+			}
+		}
+
+		return url;
+	}
+	function validateAlias(elem){
+		var alias = elem.val();
+
+		if( alias !== '' ){
+			alias = alias.match(/[^a-zA-Z0-9]/) ? '' : alias;
+		}
+
+		return alias;
 	}
 });
