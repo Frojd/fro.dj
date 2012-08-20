@@ -5,25 +5,34 @@ var http = require('http'),
 // node_modules
 	tako = require('tako'),
 	mongo = require('mongodb'),
+	connect = require('connect'),
 // variables
   	app = tako(),
 	port = process.env.PORT || 5000,
 // Mongo vars
 	db,
 	alias,
-	dbhost,
-	dbport;
+	mongoURI = process.env.MONGOLAB_URI || '';
 
 
 /* Set up mongo */
 
-dbhost = process.env['MONGO_NODE_DRIVER_HOST'] || 'localhost';
-dbport = process.env['MONGO_NODE_DRIVER_PORT'] || 27017;
-
-db = new mongo.Db('frodj', new mongo.Server(dbhost, dbport, {auto_reconnect: true}));
-alias = require('./alias.js')({db: db});
-
-console.log("Connecting to db @ " + dbhost + ":" + dbport);
+if( mongoURI ){
+	mongo.connect(mongoURI, {}, function(err, database ){
+		if( !err ){
+			db = database;
+			alias = require('./alias')({db: db});
+		}
+		else {
+			console.log('Mongo connection failed so hard');
+			console.log(err);
+		}
+	});
+}
+else {
+	console.log('Mongo connection failed so hard');
+	console.log(mongoURI);
+}
 
 
 /* Route */
