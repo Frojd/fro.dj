@@ -37,7 +37,7 @@ function DB(vars){
 		callback = callback || function(){};
 
 		exists({alias: alias}, function(err, item){
-			if( !err && typeof item === 'object' && item.url ){
+			if( !err && item && item.url ){
 				// Alias exists, return url
 				callback(null, item.url);
 			}
@@ -68,15 +68,25 @@ function DB(vars){
 		// Make sure there's a callback
 		callback = callback || function(){};
 		
-		// First check if the url already exists
-		exists({url: url}, function(err, item){
-			if( !err && item ){
-				// Url is already stored in the database
-				callback(null, item.alias);
+		// Validate url
+		validateUrl(url, function(err, url){
+				console.log("noo", err, url);
+			if( !err ){
+				console.log("yay", url);
+				// Check if the url already exists
+				exists({url: url}, function(err, item){
+					if( !err && item ){
+						// Url is already stored in the database
+						callback(null, item.alias);
+					}
+					else {
+						// Try to insert a random alias
+						tryInsert(url, 0);
+					}
+				});
 			}
 			else {
-				// Try to insert a random alias
-				tryInsert(url, 0);
+				callback(err);
 			}
 		});
 
@@ -97,7 +107,7 @@ function DB(vars){
 					callback(err, data);
 				}
 			});
-		};
+		}
 	}
 
 	/** setCustom
@@ -109,23 +119,35 @@ function DB(vars){
 	 *
 	 * @callback
 	 	* @param err object, null if no error
-	 	* @param alias string, sortened url
+	 	* @param alias string, shortened url
 	 */
 	this.setCustom = function(url, alias, callback){
 		// Make sure there's a callback
 		callback = callback || function(){};
 		
-		insert({alias: alias, url: url}, function(err, data){
+		// Validate url
+		validateUrl(url, function(err, url){
 			if( !err ){
-				callback(null, alias);
-			}
-			else if( err && err.code === 11000 ){
-				// Duplicate key, alias already exists
-				callback({code: 11000, err: 'Alias is unavailable'});
+				validateAlias(alias, function(err, alias){
+					if( !err ){
+						insert({alias: alias, url: url}, function(err, data){
+							if( !err ){
+								callback(null, alias);
+							}
+							else if( err && err.code === 11000 ){
+								// Duplicate key, alias already exists
+								callback({code: 11000, err: 'Alias is unavailable'});
+							}
+							else {
+								// Other error, abort
+								callback(err, data);
+							}
+						});
+					}
+				});
 			}
 			else {
-				// Other error, abort
-				callback(err, data);
+				callback(err);
 			}
 		});
 	}
@@ -188,6 +210,44 @@ function DB(vars){
 				callback(err, item);
 			});
 		});
+	}
+
+	function validateUrl(url, callback){
+		var err = false;
+
+		// Make sure there's a callback
+		callback = callback || function(){};
+
+		// Not empty
+		if( url === '' ){
+			err = true;
+		}
+
+		// Not contains spaces and is longer than one character
+		if( url.indexOf(' ') !== -1 || url.length < 2 ){
+			err = true;
+		}
+
+		// If url contains no protocoll, prepend http://
+		if( url.indexOf('://') <= 0 ){
+			url = 'http://' + url;
+		}
+
+		if( err ){
+			callback({code: 400, message: 'Invalid url'});
+		}
+		else {
+			callback(null, url);
+		}
+	}
+
+	function validateAlias(alias, callback){
+		if( alias.match(/[^a-zA-Z0-9]/) !== null ){
+			callback({code: 400, message: 'Bad characters in alias'});
+		}
+		else {
+			callback(null, alias);
+		}
 	}
 }
 
