@@ -1,1 +1,44 @@
-404
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title dir="ltr">404 - fro.dj</title>
+
+  <meta name="viewport" content="width=device-width">
+
+  <link rel="stylesheet" media="screen" href="/static/css/style.css?v001launch">
+  <link rel="stylesheet" media="screen" href="/static/css/frodj.css?v001launch">
+  <link rel="stylesheet" media="screen" href="/static/css/404.css?v001launch">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script src="/static/js/script.js"></script>
+  <script src="/static/js/404.js"></script>
+</head>
+
+<body class="e404">
+	<header id="header">
+		<p>fro.dj - error 404</p>
+	</header>
+	<section id="main">
+		<hgroup>
+			<h1>Noooo. You broked it!</h1>
+			<h2>The alias <span id="suggestion"></span> is up for grabs! Claim it before it's too late:</h2>
+		</hgruop>
+		<form id="shortener">
+			<fieldset>
+				<a id="toggleAlias" class="arrow" href="#"></a>
+				<input type="text" id="url" value="" placeholder="http://reallyreallyreallyreallyreally.looooooong.url" autofocus />
+				<button id="submit">Shorter!</button>
+			</fieldset>
+			<fieldset>
+				<input type="text" id="alias" value="" placeholder="yeah" />
+			</fieldset>
+			<fieldset>
+				<p id="result"></p>
+			</fieldset>
+		</form>
+	</section>
+	<footer id="footer">
+		<a href="http://frojd.se">Fröjd Interactive</a>
+	</footer>
+</body>
