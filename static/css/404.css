@@ -1,0 +1,72 @@
+* {
+	-webkit-transition-duration: 0.4s;
+	-moz-transition-duration: 0.4s;
+	-o-transition-duration: 0.4s;
+	transition-duration: 0.4s;
+
+	-webkit-transition-property: all;
+	-moz-transition-property: all;
+	-o-transition-property: all;
+	transition-property: all;
+}
+
+.e404 #header {
+	-webkit-transform: rotate(80deg);
+	-webkit-transform-origin: 20px;
+}
+
+.e404 #toggleAlias {
+	top: auto;
+	bottom: -5px;
+	left: -22px;
+	-webkit-transform: rotate(27deg);
+}
+
+.e404 #main {
+	position: fixed;
+	top: auto;
+	bottom: 0;
+	height: 210px;
+}
+
+.e404 #shortener {
+	bottom: 0;
+}
+
+.e404 hgroup h1 {
+	width: 670px;
+	letter-spacing: -4px;
+	font-size: 3em;
+	-webkit-transform: rotate(86deg);
+}
+
+.e404 hgroup h2 {
+	margin-left: 352px;
+	-webkit-transform: rotate(9deg);
+	-webkit-transform-origin: 0;
+}
+
+.e404 #url {
+	position: absolute;
+	bottom: 62px;
+	-webkit-transform: rotate(5deg);
+	-webkit-transform-origin: 50px 70px;
+}
+
+.e404 #submit {
+	top: auto;
+	right: -30px;
+	bottom: 23px;
+	-webkit-transform: rotate(6deg);
+}
+
+.e404 #alias {
+	position: absolute;
+	bottom: -20px;
+}
+
+.e404 #result {
+	position: absolute;
+	bottom: 114px;
+	-webkit-transform: rotate(5deg);
+}
