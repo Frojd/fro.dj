@@ -1,36 +1,41 @@
 var http = require('http'),
 	path = require('path'),
+	url = require('url'),
 	fs = require('fs'),
 	util = require('util'),
 // node_modules
 	tako = require('tako'),
 	mongo = require('mongodb'),
-	connect = require('connect'),
 // variables
   	app = tako(),
 	port = process.env.PORT || 5000,
 // Mongo vars
 	db,
 	alias,
-	mongoURI = process.env.MONGOLAB_URI || '';
+	mongoURI = url.parse(process.env.MONGOLAB_URI || 'mongodb://user:psw@subdomain.domain.topdomain:27017/database');
 
 
 /* Set up mongo */
 
 if( mongoURI ){
-	mongo.connect(mongoURI, {}, function(err, database ){
-		if( !err ){
-			db = database;
-			alias = require('./alias')({db: db});
-		}
-		else {
-			console.log('Mongo connection failed so hard');
-			console.log(err);
-		}
+	console.log(mongoURI);
+	db = new mongo.Db(mongoURI.path.substring(1), new mongo.Server(mongoURI.hostname, +mongoURI.port, {auto_reconnect: true}));
+
+	db.open(function(err, database){
+		db.authenticate(mongoURI.auth.split(':')[0], mongoURI.auth.split(':')[1], function(err, result){
+			if( !err ){
+				db = database;
+				alias = require('./alias')({db: db});
+			}
+			else {
+				console.log('Mongo connection failed pretty hard');
+				console.log(err);
+			}
+		});
 	});
 }
 else {
-	console.log('Mongo connection failed so hard');
+	console.log('Mongo connection failed really hard');
 	console.log(mongoURI);
 }
 
