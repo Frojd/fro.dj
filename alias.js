@@ -70,9 +70,7 @@ function DB(vars){
 		
 		// Validate url
 		validateUrl(url, function(err, url){
-				console.log("noo", err, url);
 			if( !err ){
-				console.log("yay", url);
 				// Check if the url already exists
 				exists({url: url}, function(err, item){
 					if( !err && item ){
