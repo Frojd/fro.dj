@@ -9,16 +9,17 @@ var http = require('http'),
 // variables
   	app = tako(),
 	port = process.env.PORT || 5000,
+// config
+	config = require('./config'),
 // Mongo vars
 	db,
 	alias,
-	mongoURI = url.parse(process.env.MONGOLAB_URI || 'mongodb://user:psw@subdomain.domain.topdomain:27017/database');
+	mongoURI = url.parse(process.env.MONGOLAB_URI || config.dbConnectionString);
 
 
 /* Set up mongo */
 
 if( mongoURI ){
-	console.log(mongoURI);
 	db = new mongo.Db(mongoURI.path.substring(1), new mongo.Server(mongoURI.hostname, +mongoURI.port, {auto_reconnect: true}));
 
 	db.open(function(err, database){
