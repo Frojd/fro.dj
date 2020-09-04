@@ -6,7 +6,7 @@
     "npm": "1.1.x"
   },
   "dependencies": {
-  	"mongodb": "1.1.2",
+  	"mongodb": "3.6.1",
   	"tako": "*"
   }
 }
